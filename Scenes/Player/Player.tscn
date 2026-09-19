@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://Scripts/Player/PlayerController.cs" id="1_controller"]
+[ext_resource type="Script" path="res://Scripts/Items/PlayerItemController.cs" id="2_items"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape_player"]
 radius = 0.45
@@ -32,6 +33,9 @@ script = ExtResource("1_controller")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape_player")
+
+[node name="ItemController" type="Node" parent="."]
+script = ExtResource("2_items")
 
 [node name="Visual" type="Node3D" parent="."]
 

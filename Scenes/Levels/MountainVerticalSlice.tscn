@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3]
+[gd_scene load_steps=24 format=3]
 
 [ext_resource type="Script" path="res://Scripts/Levels/MountainVerticalSlice.cs" id="1_level"]
 [ext_resource type="PackedScene" path="res://Scenes/Player/Player.tscn" id="2_player"]
@@ -8,6 +8,9 @@
 [ext_resource type="PackedScene" path="res://Scenes/Hazards/FallingRockHazard.tscn" id="6_falling_rock"]
 [ext_resource type="Script" path="res://Scripts/Hazards/IceSurface.cs" id="7_ice"]
 [ext_resource type="Script" path="res://Scripts/Hazards/WindZone3D.cs" id="8_wind"]
+[ext_resource type="PackedScene" path="res://Scenes/Items/WorldItem.tscn" id="9_world_item"]
+[ext_resource type="Resource" path="res://Items/TestPickup.tres" id="10_test_pickup"]
+[ext_resource type="Script" path="res://Scripts/Items/ItemDebugOverlay.cs" id="11_item_overlay"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_block"]
 size = Vector3(1, 1, 1)
@@ -182,6 +185,10 @@ material_override = SubResource("Material_normal")
 
 [node name="Collision" type="CollisionShape3D" parent="Environment/Section02_StaggeredCliffs/LedgeB"]
 shape = SubResource("BoxShape_block")
+
+[node name="TestPickupEarly" parent="Environment/Section02_StaggeredCliffs" instance=ExtResource("9_world_item")]
+position = Vector3(-1, 6.05, -4.6)
+Item = ExtResource("10_test_pickup")
 
 [node name="CliffB" type="StaticBody3D" parent="Environment/Section02_StaggeredCliffs" groups=["climbable"]]
 position = Vector3(-1, 7.0, -6.8)
@@ -382,6 +389,10 @@ material_override = SubResource("Material_danger")
 [node name="Collision" type="CollisionShape3D" parent="Environment/Section05_HighLedges/HighLedge03"]
 shape = SubResource("BoxShape_block")
 
+[node name="TestPickupHigh" parent="Environment/Section05_HighLedges" instance=ExtResource("9_world_item")]
+position = Vector3(-1, 33.6, -20.2)
+Item = ExtResource("10_test_pickup")
+
 [node name="WindZone" type="Area3D" parent="Environment/Section05_HighLedges"]
 position = Vector3(0.5, 33.0, -20.0)
 collision_layer = 0
@@ -515,6 +526,21 @@ rotation_degrees = Vector3(-20, 0, 0)
 
 [node name="Camera3D" type="Camera3D" parent="SharedCameraRig/SpringArm3D" groups=["shared_camera"]]
 current = true
+
+[node name="ItemDebugOverlay" type="CanvasLayer" parent="."]
+script = ExtResource("11_item_overlay")
+Player1Path = NodePath("../Players/Player1")
+Player2Path = NodePath("../Players/Player2")
+
+[node name="MarginContainer" type="MarginContainer" parent="ItemDebugOverlay"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 260.0
+offset_bottom = 68.0
+
+[node name="Label" type="Label" parent="ItemDebugOverlay/MarginContainer"]
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Player1 Item: Empty\nPlayer2 Item: Empty"
 
 [node name="FinishArea" type="Area3D" parent="."]
 position = Vector3(0, 37, -22)

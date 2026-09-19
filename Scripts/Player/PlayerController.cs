@@ -65,8 +65,12 @@ public partial class PlayerController : CharacterBody3D
     private PlayerController _grabbedPlayer = null;
     private PlayerController _grabbedBy = null;
     private PlayerController _standingOnPlayer = null;
+    private PlayerItemController _itemController = null!;
 
     public PlayerController GrabbedPlayer => _grabbedPlayer;
+    public string CurrentItemName => _itemController is not null && _itemController.HasItem
+        ? _itemController.CurrentItem.DisplayName
+        : "Empty";
 
     public override void _Ready()
     {
@@ -81,6 +85,7 @@ public partial class PlayerController : CharacterBody3D
         _kickShape = GetNode<CollisionShape3D>("Visual/KickDetector/CollisionShape3D");
         _playerGrabDetector = GetNode<Area3D>("Visual/PlayerGrabDetector");
         _playerGrabShape = GetNode<CollisionShape3D>("Visual/PlayerGrabDetector/CollisionShape3D");
+        _itemController = GetNode<PlayerItemController>("ItemController");
         _wallDetector.AddException(this);
         _ledgeDetector.AddException(this);
         _ledgeTopDetector.AddException(this);
@@ -442,6 +447,11 @@ public partial class PlayerController : CharacterBody3D
         }
 
         _externalVelocity += velocityChange;
+    }
+
+    public bool TryPickUpItem(ItemDefinition item)
+    {
+        return _itemController.TryPickUp(item);
     }
 
     public void ApplyRopeTension(Vector3 velocityChange, float tension)
