@@ -14,10 +14,15 @@ public partial class SharedCamera : Node3D
     [Export] public float MouseSensitivity { get; set; } = 0.003f;
     [Export] public float MinPitch { get; set; } = Mathf.DegToRad(-55.0f);
     [Export] public float MaxPitch { get; set; } = Mathf.DegToRad(30.0f);
+    [Export] public float CameraShakeStrength { get; set; } = 0.18f;
+    [Export] public float CameraShakeDuration { get; set; } = 0.2f;
 
     private Node3D _player1 = null!;
     private Node3D _player2 = null!;
     private SpringArm3D _springArm = null!;
+    private float _shakeRemaining;
+    private float _shakeAmount;
+    private float _shakeElapsed;
 
     public override void _Ready()
     {
@@ -32,13 +37,32 @@ public partial class SharedCamera : Node3D
         Vector3 midpoint = (_player1.GlobalPosition + _player2.GlobalPosition) * 0.5f;
         float verticalSeparation = Mathf.Abs(_player1.GlobalPosition.Y - _player2.GlobalPosition.Y);
         Vector3 targetPosition = midpoint + Vector3.Up * (FollowHeight + verticalSeparation * VerticalSeparationOffset);
-        GlobalPosition = GlobalPosition.Lerp(targetPosition, Mathf.Min(FollowSpeed * (float)delta, 1.0f));
+        Vector3 shakeOffset = Vector3.Zero;
+        if (_shakeRemaining > 0.0f)
+        {
+            _shakeRemaining -= (float)delta;
+            _shakeElapsed += (float)delta;
+            float fade = Mathf.Clamp(_shakeRemaining / CameraShakeDuration, 0.0f, 1.0f);
+            shakeOffset = new Vector3(
+                Mathf.Sin(_shakeElapsed * 83.0f),
+                Mathf.Cos(_shakeElapsed * 67.0f),
+                0.0f) * (_shakeAmount * fade);
+        }
+
+        GlobalPosition = GlobalPosition.Lerp(targetPosition + shakeOffset, Mathf.Min(FollowSpeed * (float)delta, 1.0f));
 
         float separation = _player1.GlobalPosition.DistanceTo(_player2.GlobalPosition);
         _springArm.SpringLength = Mathf.Clamp(
             BaseDistance + separation * DistancePerPlayerSeparation,
             MinDistance,
             MaxDistance);
+    }
+
+    public void AddShake(float proximity)
+    {
+        _shakeAmount = Mathf.Max(_shakeAmount, CameraShakeStrength * Mathf.Clamp(proximity, 0.0f, 1.0f));
+        _shakeRemaining = CameraShakeDuration;
+        _shakeElapsed = 0.0f;
     }
 
     public override void _UnhandledInput(InputEvent @event)

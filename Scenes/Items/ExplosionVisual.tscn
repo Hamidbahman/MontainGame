@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Items/ExplosionVisual.cs" id="1_script"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_explosion"]
+radius = 0.5
+height = 1.0
+
+[sub_resource type="StandardMaterial3D" id="Material_explosion"]
+transparency = 1
+albedo_color = Color(1, 0.34, 0.04, 0.55)
+emission_enabled = true
+emission = Color(1, 0.12, 0.01, 1)
+shading_mode = 0
+
+[node name="ExplosionVisual" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_explosion")
+material_override = SubResource("Material_explosion")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+light_color = Color(1, 0.3, 0.05, 1)
+light_energy = 5.0
+omni_range = 7.0

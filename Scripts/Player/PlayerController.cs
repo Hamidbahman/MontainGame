@@ -74,6 +74,7 @@ public partial class PlayerController : CharacterBody3D
 
     public override void _Ready()
     {
+        AddToGroup("players");
         _visual = GetNode<Node3D>("Visual");
         _controllerCollision = GetNode<CollisionShape3D>("CollisionShape3D");
         _ragdollBody = GetNode<RigidBody3D>("PrototypeRagdollBody");
@@ -452,6 +453,18 @@ public partial class PlayerController : CharacterBody3D
     public bool TryPickUpItem(ItemDefinition item)
     {
         return _itemController.TryPickUp(item);
+    }
+
+    public Vector3 GetItemThrowDirection()
+    {
+        Vector3 direction = (IsClimbing || IsHanging) ? _climbNormal : -_visual.GlobalTransform.Basis.Z;
+        direction.Y = 0.0f;
+        return direction.LengthSquared() > 0.001f ? direction.Normalized() : -GlobalTransform.Basis.Z.Normalized();
+    }
+
+    public Vector3 GetItemThrowPosition(float forwardOffset, float height)
+    {
+        return GlobalPosition + Vector3.Up * height + GetItemThrowDirection() * forwardOffset;
     }
 
     public void ApplyRopeTension(Vector3 velocityChange, float tension)

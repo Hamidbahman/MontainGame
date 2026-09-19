@@ -113,5 +113,10 @@ public partial class MountainVerticalSlice : Node3D
                 hazard.ResetHazard();
             }
         }
+
+        foreach (Node node in GetTree().GetNodesInGroup("active_bomb"))
+        {
+            node.QueueFree();
+        }
     }
 }

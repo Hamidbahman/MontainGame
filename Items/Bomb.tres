@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="BombDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Items/BombDefinition.cs" id="1_script"]
+[ext_resource type="PackedScene" path="res://Scenes/Items/PhysicsBomb.tscn" id="2_bomb_scene"]
+
+[resource]
+script = ExtResource("1_script")
+ItemId = "bomb"
+DisplayName = "Bomb"
+BombScene = ExtResource("2_bomb_scene")
+FuseDuration = 2.5
+ExplosionRadius = 4.0
+ExplosionForce = 12.0
+ExplosionUpwardForce = 7.0
+ThrowForwardSpeed = 5.0
+ThrowUpwardSpeed = 2.5

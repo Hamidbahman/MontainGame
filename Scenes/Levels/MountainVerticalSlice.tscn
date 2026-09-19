@@ -9,7 +9,7 @@
 [ext_resource type="Script" path="res://Scripts/Hazards/IceSurface.cs" id="7_ice"]
 [ext_resource type="Script" path="res://Scripts/Hazards/WindZone3D.cs" id="8_wind"]
 [ext_resource type="PackedScene" path="res://Scenes/Items/WorldItem.tscn" id="9_world_item"]
-[ext_resource type="Resource" path="res://Items/TestPickup.tres" id="10_test_pickup"]
+[ext_resource type="Resource" path="res://Items/Bomb.tres" id="10_bomb"]
 [ext_resource type="Script" path="res://Scripts/Items/ItemDebugOverlay.cs" id="11_item_overlay"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_block"]
@@ -118,32 +118,10 @@ material_override = SubResource("Material_normal")
 [node name="Collision" type="CollisionShape3D" parent="Environment/Section01_Start/StartFloor"]
 shape = SubResource("BoxShape_block")
 
-[node name="StartStep" type="StaticBody3D" parent="Environment/Section01_Start"]
-position = Vector3(0, 0.175, 0.2)
-scale = Vector3(5.5, 0.35, 2.4)
-
-[node name="Mesh" type="MeshInstance3D" parent="Environment/Section01_Start/StartStep"]
-mesh = SubResource("BoxMesh_block")
-material_override = SubResource("Material_normal")
-
-[node name="Collision" type="CollisionShape3D" parent="Environment/Section01_Start/StartStep"]
-shape = SubResource("BoxShape_block")
-
-[node name="StartClimbFace" type="StaticBody3D" parent="Environment/Section01_Start" groups=["climbable"]]
-position = Vector3(0, 0.825, -1)
-scale = Vector3(6, 0.95, 0.7)
-
-[node name="Mesh" type="MeshInstance3D" parent="Environment/Section01_Start/StartClimbFace"]
-mesh = SubResource("BoxMesh_block")
-material_override = SubResource("Material_climbable")
-
-[node name="Collision" type="CollisionShape3D" parent="Environment/Section01_Start/StartClimbFace"]
-shape = SubResource("BoxShape_block")
-
 [node name="Section02_StaggeredCliffs" type="Node3D" parent="Environment"]
 
 [node name="LedgeA" type="StaticBody3D" parent="Environment/Section02_StaggeredCliffs"]
-position = Vector3(0, 1.05, -3.2)
+position = Vector3(0, 0.5, -3.2)
 scale = Vector3(5, 0.5, 3.6)
 
 [node name="Mesh" type="MeshInstance3D" parent="Environment/Section02_StaggeredCliffs/LedgeA"]
@@ -186,9 +164,9 @@ material_override = SubResource("Material_normal")
 [node name="Collision" type="CollisionShape3D" parent="Environment/Section02_StaggeredCliffs/LedgeB"]
 shape = SubResource("BoxShape_block")
 
-[node name="TestPickupEarly" parent="Environment/Section02_StaggeredCliffs" instance=ExtResource("9_world_item")]
+[node name="BombPickupEarly" parent="Environment/Section02_StaggeredCliffs" instance=ExtResource("9_world_item")]
 position = Vector3(-1, 6.05, -4.6)
-Item = ExtResource("10_test_pickup")
+Item = ExtResource("10_bomb")
 
 [node name="CliffB" type="StaticBody3D" parent="Environment/Section02_StaggeredCliffs" groups=["climbable"]]
 position = Vector3(-1, 7.0, -6.8)
@@ -389,9 +367,9 @@ material_override = SubResource("Material_danger")
 [node name="Collision" type="CollisionShape3D" parent="Environment/Section05_HighLedges/HighLedge03"]
 shape = SubResource("BoxShape_block")
 
-[node name="TestPickupHigh" parent="Environment/Section05_HighLedges" instance=ExtResource("9_world_item")]
+[node name="BombPickupHigh" parent="Environment/Section05_HighLedges" instance=ExtResource("9_world_item")]
 position = Vector3(-1, 33.6, -20.2)
-Item = ExtResource("10_test_pickup")
+Item = ExtResource("10_bomb")
 
 [node name="WindZone" type="Area3D" parent="Environment/Section05_HighLedges"]
 position = Vector3(0.5, 33.0, -20.0)
@@ -509,7 +487,7 @@ Player2Path = NodePath("../Players/Player2")
 
 [node name="RopeVisual" type="MeshInstance3D" parent="PlayerRope"]
 
-[node name="SharedCameraRig" type="Node3D" parent="."]
+[node name="SharedCameraRig" type="Node3D" parent="." groups=["shared_camera_rig"]]
 position = Vector3(0, 2, 4)
 script = ExtResource("4_camera")
 Player1Path = NodePath("../Players/Player1")

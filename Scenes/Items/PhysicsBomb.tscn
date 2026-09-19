@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Items/PhysicsBomb.cs" id="1_script"]
+[ext_resource type="PackedScene" path="res://Scenes/Items/ExplosionVisual.tscn" id="2_explosion"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_bomb"]
+radius = 0.32
+height = 0.64
+
+[sub_resource type="SphereShape3D" id="SphereShape_bomb"]
+radius = 0.32
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_bomb"]
+bounce = 0.45
+friction = 0.65
+
+[sub_resource type="StandardMaterial3D" id="Material_bomb"]
+albedo_color = Color(0.1, 0.1, 0.12, 1)
+metallic = 0.4
+roughness = 0.35
+
+[node name="PhysicsBomb" type="RigidBody3D"]
+mass = 1.2
+physics_material_override = SubResource("PhysicsMaterial_bomb")
+contact_monitor = true
+max_contacts_reported = 4
+script = ExtResource("1_script")
+ExplosionVisualScene = ExtResource("2_explosion")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_bomb")
+material_override = SubResource("Material_bomb")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape_bomb")
