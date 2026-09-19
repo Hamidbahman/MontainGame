@@ -116,8 +116,8 @@ material_override = SubResource("Material_normal")
 shape = SubResource("BoxShape_block")
 
 [node name="StartStep" type="StaticBody3D" parent="Environment/Section01_Start"]
-position = Vector3(0, 0.35, 0.2)
-scale = Vector3(5.5, 0.7, 2.4)
+position = Vector3(0, 0.175, 0.2)
+scale = Vector3(5.5, 0.35, 2.4)
 
 [node name="Mesh" type="MeshInstance3D" parent="Environment/Section01_Start/StartStep"]
 mesh = SubResource("BoxMesh_block")
@@ -127,8 +127,8 @@ material_override = SubResource("Material_normal")
 shape = SubResource("BoxShape_block")
 
 [node name="StartClimbFace" type="StaticBody3D" parent="Environment/Section01_Start" groups=["climbable"]]
-position = Vector3(0, 1.1, -1)
-scale = Vector3(6, 0.8, 0.7)
+position = Vector3(0, 0.825, -1)
+scale = Vector3(6, 0.95, 0.7)
 
 [node name="Mesh" type="MeshInstance3D" parent="Environment/Section01_Start/StartClimbFace"]
 mesh = SubResource("BoxMesh_block")
@@ -140,7 +140,7 @@ shape = SubResource("BoxShape_block")
 [node name="Section02_StaggeredCliffs" type="Node3D" parent="Environment"]
 
 [node name="LedgeA" type="StaticBody3D" parent="Environment/Section02_StaggeredCliffs"]
-position = Vector3(0, 1.25, -3.2)
+position = Vector3(0, 1.05, -3.2)
 scale = Vector3(5, 0.5, 3.6)
 
 [node name="Mesh" type="MeshInstance3D" parent="Environment/Section02_StaggeredCliffs/LedgeA"]
