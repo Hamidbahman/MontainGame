@@ -1,6 +1,7 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="PackedScene" path="res://Scenes/Player/Player.tscn" id="1_player"]
+[ext_resource type="Script" path="res://Scripts/Camera/SharedCamera.cs" id="2_shared_camera"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_ground"]
 size = Vector3(32, 1, 28)
@@ -30,6 +31,16 @@ ambient_light_energy = 0.6
 tonemap_mode = 2
 tonemap_exposure = 1.1
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial_player1"]
+albedo_color = Color(0.12, 0.4, 0.95, 1)
+metallic = 0.05
+roughness = 0.55
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial_player2"]
+albedo_color = Color(0.16, 0.82, 0.3, 1)
+metallic = 0.05
+roughness = 0.55
+
 [node name="PrototypeMountain" type="Node3D"]
 
 [node name="Environment" type="Node3D" parent="."]
@@ -46,6 +57,7 @@ shape = SubResource("BoxShape_ground")
 [node name="ClimbingWall" type="StaticBody3D" parent="Environment"]
 position = Vector3(0, 6, -5)
 groups = ["climbable"]
+collision_layer = 1
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Environment/ClimbingWall"]
 mesh = SubResource("BoxMesh_wall")
@@ -97,8 +109,31 @@ position = Vector3(-1, 0.5, -1.5)
 [node name="Player2Spawn" type="Marker3D" parent="SpawnPoints"]
 position = Vector3(1, 0.5, -1.5)
 
-[node name="Player1" parent="." instance=ExtResource("1_player")]
+[node name="Players" type="Node3D" parent="."]
+
+[node name="Player1" parent="Players" instance=ExtResource("1_player")]
 position = Vector3(-1, 0.9, -1.5)
+PlayerId = 1
+Visual/MeshInstance3D:material_override = SubResource("StandardMaterial_player1")
+
+[node name="Player2" parent="Players" instance=ExtResource("1_player")]
+position = Vector3(1, 0.9, -1.5)
+PlayerId = 2
+Visual/MeshInstance3D:material_override = SubResource("StandardMaterial_player2")
+
+[node name="SharedCameraRig" type="Node3D" parent="."]
+position = Vector3(0, 1.5, 0)
+script = ExtResource("2_shared_camera")
+Player1Path = NodePath("../Players/Player1")
+Player2Path = NodePath("../Players/Player2")
+
+[node name="SpringArm3D" type="SpringArm3D" parent="SharedCameraRig"]
+spring_length = 7.0
+margin = 0.1
+rotation_degrees = Vector3(-18, 0, 0)
+
+[node name="Camera3D" type="Camera3D" parent="SharedCameraRig/SpringArm3D" groups=["shared_camera"]]
+current = true
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 rotation_degrees = Vector3(-48, -28, 0)
