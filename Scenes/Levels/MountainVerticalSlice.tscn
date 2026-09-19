@@ -1,0 +1,554 @@
+[gd_scene load_steps=21 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Levels/MountainVerticalSlice.cs" id="1_level"]
+[ext_resource type="PackedScene" path="res://Scenes/Player/Player.tscn" id="2_player"]
+[ext_resource type="Script" path="res://Scripts/Physics/PlayerRope.cs" id="3_rope"]
+[ext_resource type="Script" path="res://Scripts/Camera/SharedCamera.cs" id="4_camera"]
+[ext_resource type="PackedScene" path="res://Scenes/Hazards/CollapsingPlatform.tscn" id="5_collapsing_platform"]
+[ext_resource type="PackedScene" path="res://Scenes/Hazards/FallingRockHazard.tscn" id="6_falling_rock"]
+[ext_resource type="Script" path="res://Scripts/Hazards/IceSurface.cs" id="7_ice"]
+[ext_resource type="Script" path="res://Scripts/Hazards/WindZone3D.cs" id="8_wind"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_block"]
+size = Vector3(1, 1, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape_block"]
+size = Vector3(1, 1, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape_checkpoint"]
+size = Vector3(7, 3, 6)
+
+[sub_resource type="BoxShape3D" id="BoxShape_safety"]
+size = Vector3(80, 3, 80)
+
+[sub_resource type="BoxShape3D" id="BoxShape_finish"]
+size = Vector3(8, 4, 7)
+
+[sub_resource type="StandardMaterial3D" id="Material_normal"]
+albedo_color = Color(0.36, 0.38, 0.42, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="Material_climbable"]
+albedo_color = Color(0.42, 0.24, 0.12, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="Material_danger"]
+albedo_color = Color(0.5, 0.09, 0.07, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="Material_checkpoint"]
+albedo_color = Color(0.1, 0.66, 0.78, 1)
+emission_enabled = true
+emission = Color(0.02, 0.28, 0.38, 1)
+
+[sub_resource type="StandardMaterial3D" id="Material_finish"]
+albedo_color = Color(0.95, 0.74, 0.12, 1)
+emission_enabled = true
+emission = Color(0.45, 0.28, 0.01, 1)
+
+[sub_resource type="StandardMaterial3D" id="Material_ice"]
+albedo_color = Color(0.3, 0.78, 0.95, 1)
+metallic = 0.15
+roughness = 0.12
+
+[sub_resource type="BoxShape3D" id="BoxShape_wind"]
+size = Vector3(9, 6, 7)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wind"]
+size = Vector3(9, 6, 7)
+
+[sub_resource type="StandardMaterial3D" id="Material_wind"]
+transparency = 1
+albedo_color = Color(0.38, 0.78, 1, 0.12)
+emission_enabled = true
+emission = Color(0.08, 0.28, 0.5, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_flagpole"]
+top_radius = 0.08
+bottom_radius = 0.08
+height = 4.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_flag"]
+size = Vector3(1.6, 0.9, 0.08)
+
+[sub_resource type="Environment" id="Environment_outdoor"]
+background_mode = 1
+background_color = Color(0.18, 0.33, 0.52, 1)
+background_energy_multiplier = 0.8
+ambient_light_source = 3
+ambient_light_color = Color(0.66, 0.74, 0.88, 1)
+ambient_light_energy = 0.75
+tonemap_mode = 2
+tonemap_exposure = 1.15
+
+[sub_resource type="StandardMaterial3D" id="Material_player1"]
+albedo_color = Color(0.12, 0.4, 0.95, 1)
+roughness = 0.55
+
+[sub_resource type="StandardMaterial3D" id="Material_player2"]
+albedo_color = Color(0.16, 0.82, 0.3, 1)
+roughness = 0.55
+
+[node name="MountainVerticalSlice" type="Node3D"]
+script = ExtResource("1_level")
+Player1Path = NodePath("Players/Player1")
+Player2Path = NodePath("Players/Player2")
+RopePath = NodePath("PlayerRope")
+CheckpointStartPath = NodePath("Checkpoints/CheckpointStart")
+CheckpointMidPath = NodePath("Checkpoints/CheckpointMid")
+CheckpointHighPath = NodePath("Checkpoints/CheckpointHigh")
+SafetyResetAreaPath = NodePath("SafetyResetArea")
+FinishAreaPath = NodePath("FinishArea")
+
+[node name="Environment" type="Node3D" parent="."]
+
+[node name="Section01_Start" type="Node3D" parent="Environment"]
+
+[node name="StartFloor" type="StaticBody3D" parent="Environment/Section01_Start"]
+position = Vector3(0, -0.5, 4)
+scale = Vector3(12, 1, 10)
+
+[node name="Mesh" type="MeshInstance3D" parent="Environment/Section01_Start/StartFloor"]
+mesh = SubResource("BoxMesh_block")
+material_override = SubResource("Material_normal")
+
+[node name="Collision" type="CollisionShape3D" parent="Environment/Section01_Start/StartFloor"]
+shape = SubResource("BoxShape_block")
+
+[node name="StartStep" type="StaticBody3D" parent="Environment/Section01_Start"]
+position = Vector3(0, 0.35, 0.2)
+scale = Vector3(5.5, 0.7, 2.4)
+
+[node name="Mesh" type="MeshInstance3D" parent="Environment/Section01_Start/StartStep"]
+mesh = SubResource("BoxMesh_block")
+material_override = SubResource("Material_normal")
+
+[node name="Collision" type="CollisionShape3D" parent="Environment/Section01_Start/StartStep"]
+shape = SubResource("BoxShape_block")
+
+[node name="StartClimbFace" type="StaticBody3D" parent="Environment/Section01_Start" groups=["climbable"]]
+position = Vector3(0, 1.1, -1)
+scale = Vector3(6, 0.8, 0.7)
+
+[node name="Mesh" type="MeshInstance3D" parent="Environment/Section01_Start/StartClimbFace"]
+mesh = SubResource("BoxMesh_block")
+material_override = SubResource("Material_climbable")
+
+[node name="Collision" type="CollisionShape3D" parent="Environment/Section01_Start/StartClimbFace"]
+shape = SubResource("BoxShape_block")
+
+[node name="Section02_StaggeredCliffs" type="Node3D" parent="Environment"]
+
+[node name="LedgeA" type="StaticBody3D" parent="Environment/Section02_StaggeredCliffs"]
+position = Vector3(0, 1.25, -3.2)
+scale = Vector3(5, 0.5, 3.6)
+
+[node name="Mesh" type="MeshInstance3D" parent="Environment/Section02_StaggeredCliffs/LedgeA"]
+mesh = SubResource("BoxMesh_block")
+material_override = SubResource("Material_normal")
+
+[node name="Collision" type="CollisionShape3D" parent="Environment/Section02_StaggeredCliffs/LedgeA"]
+shape = SubResource("BoxShape_block")
+
+[node name="CoopShortcutLedge" type="StaticBody3D" parent="Environment/Section02_StaggeredCliffs"]
+position = Vector3(-3.5, 3.1, -4.0)
+scale = Vector3(2.5, 0.4, 2.0)
+
+[node name="Mesh" type="MeshInstance3D" parent="Environment/Section02_StaggeredCliffs/CoopShortcutLedge"]
+mesh = SubResource("BoxMesh_block")
+material_override = SubResource("Material_checkpoint")
+
+[node name="Collision" type="CollisionShape3D" parent="Environment/Section02_StaggeredCliffs/CoopShortcutLedge"]
+shape = SubResource("BoxShape_block")
+
+[node name="CliffA" type="StaticBody3D" parent="Environment/Section02_StaggeredCliffs" groups=["climbable"]]
+position = Vector3(3, 3.2, -3.6)
+scale = Vector3(3.5, 4, 0.7)
+
+[node name="Mesh" type="MeshInstance3D" parent="Environment/Section02_StaggeredCliffs/CliffA"]
+mesh = SubResource("BoxMesh_block")
+material_override = SubResource("Material_climbable")
+
+[node name="Collision" type="CollisionShape3D" parent="Environment/Section02_StaggeredCliffs/CliffA"]
+shape = SubResource("BoxShape_block")
+
+[node name="LedgeB" type="StaticBody3D" parent="Environment/Section02_StaggeredCliffs"]
+position = Vector3(-1, 5.2, -4.6)
+scale = Vector3(3.5, 0.5, 3)
+
+[node name="Mesh" type="MeshInstance3D" parent="Environment/Section02_StaggeredCliffs/LedgeB"]
+mesh = SubResource("BoxMesh_block")
+material_override = SubResource("Material_normal")
+
+[node name="Collision" type="CollisionShape3D" parent="Environment/Section02_StaggeredCliffs/LedgeB"]
+shape = SubResource("BoxShape_block")
+
+[node name="CliffB" type="StaticBody3D" parent="Environment/Section02_StaggeredCliffs" groups=["climbable"]]
+position = Vector3(-1, 7.0, -6.8)
+scale = Vector3(3, 3.5, 0.7)
+
+[node name="Mesh" type="MeshInstance3D" parent="Environment/Section02_StaggeredCliffs/CliffB"]
+mesh = SubResource("BoxMesh_block")
+material_override = SubResource("Material_climbable")
+
+[node name="Collision" type="CollisionShape3D" parent="Environment/Section02_StaggeredCliffs/CliffB"]
+shape = SubResource("BoxShape_block")
+
+[node name="LedgeC" type="StaticBody3D" parent="Environment/Section02_StaggeredCliffs"]
+position = Vector3(3, 8.8, -7.8)
+scale = Vector3(3.5, 0.5, 2.6)
+
+[node name="Mesh" type="MeshInstance3D" parent="Environment/Section02_StaggeredCliffs/LedgeC"]
+mesh = SubResource("BoxMesh_block")
+material_override = SubResource("Material_normal")
+
+[node name="Collision" type="CollisionShape3D" parent="Environment/Section02_StaggeredCliffs/LedgeC"]
+shape = SubResource("BoxShape_block")
+
+[node name="ExitCliff" type="StaticBody3D" parent="Environment/Section02_StaggeredCliffs" groups=["climbable"]]
+position = Vector3(3, 10.0, -10.0)
+scale = Vector3(3.5, 2.5, 0.7)
+
+[node name="Mesh" type="MeshInstance3D" parent="Environment/Section02_StaggeredCliffs/ExitCliff"]
+mesh = SubResource("BoxMesh_block")
+material_override = SubResource("Material_climbable")
+
+[node name="Collision" type="CollisionShape3D" parent="Environment/Section02_StaggeredCliffs/ExitCliff"]
+shape = SubResource("BoxShape_block")
+
+[node name="Section03_BrokenCrossing" type="Node3D" parent="Environment"]
+
+[node name="EntryCliff" type="StaticBody3D" parent="Environment/Section03_BrokenCrossing" groups=["climbable"]]
+position = Vector3(3, 11.5, -11.3)
+scale = Vector3(4, 3, 3)
+
+[node name="Mesh" type="MeshInstance3D" parent="Environment/Section03_BrokenCrossing/EntryCliff"]
+mesh = SubResource("BoxMesh_block")
+material_override = SubResource("Material_normal")
+
+[node name="Collision" type="CollisionShape3D" parent="Environment/Section03_BrokenCrossing/EntryCliff"]
+shape = SubResource("BoxShape_block")
+
+[node name="BridgePiece01" type="StaticBody3D" parent="Environment/Section03_BrokenCrossing"]
+position = Vector3(6.3, 12.0, -12.4)
+scale = Vector3(1.8, 0.35, 1.2)
+
+[node name="Mesh" type="MeshInstance3D" parent="Environment/Section03_BrokenCrossing/BridgePiece01"]
+mesh = SubResource("BoxMesh_block")
+material_override = SubResource("Material_danger")
+
+[node name="Collision" type="CollisionShape3D" parent="Environment/Section03_BrokenCrossing/BridgePiece01"]
+shape = SubResource("BoxShape_block")
+
+[node name="BridgePiece02" parent="Environment/Section03_BrokenCrossing" instance=ExtResource("5_collapsing_platform")]
+position = Vector3(8.8, 12.2, -13.2)
+scale = Vector3(1.5, 0.35, 1.0)
+
+[node name="WallBase" type="StaticBody3D" parent="Environment/Section03_BrokenCrossing" groups=["climbable"]]
+position = Vector3(10, 12.5, -14.5)
+scale = Vector3(3.5, 2, 3)
+
+[node name="Mesh" type="MeshInstance3D" parent="Environment/Section03_BrokenCrossing/WallBase"]
+mesh = SubResource("BoxMesh_block")
+material_override = SubResource("Material_normal")
+
+[node name="Collision" type="CollisionShape3D" parent="Environment/Section03_BrokenCrossing/WallBase"]
+shape = SubResource("BoxShape_block")
+
+[node name="LowerCatch" type="StaticBody3D" parent="Environment/Section03_BrokenCrossing"]
+position = Vector3(7, 6.0, -11)
+scale = Vector3(7, 0.6, 5)
+
+[node name="Mesh" type="MeshInstance3D" parent="Environment/Section03_BrokenCrossing/LowerCatch"]
+mesh = SubResource("BoxMesh_block")
+material_override = SubResource("Material_danger")
+
+[node name="Collision" type="CollisionShape3D" parent="Environment/Section03_BrokenCrossing/LowerCatch"]
+shape = SubResource("BoxShape_block")
+
+[node name="Section04_VerticalWall" type="Node3D" parent="Environment"]
+
+[node name="MajorWall" type="StaticBody3D" parent="Environment/Section04_VerticalWall" groups=["climbable"]]
+position = Vector3(10, 20, -17)
+scale = Vector3(11, 16, 1)
+
+[node name="Mesh" type="MeshInstance3D" parent="Environment/Section04_VerticalWall/MajorWall"]
+mesh = SubResource("BoxMesh_block")
+material_override = SubResource("Material_climbable")
+
+[node name="Collision" type="CollisionShape3D" parent="Environment/Section04_VerticalWall/MajorWall"]
+shape = SubResource("BoxShape_block")
+
+[node name="RestLedgeLow" type="StaticBody3D" parent="Environment/Section04_VerticalWall"]
+position = Vector3(6.5, 16, -15.4)
+scale = Vector3(3, 0.45, 2.5)
+
+[node name="Mesh" type="MeshInstance3D" parent="Environment/Section04_VerticalWall/RestLedgeLow"]
+mesh = SubResource("BoxMesh_block")
+material_override = SubResource("Material_normal")
+
+[node name="Collision" type="CollisionShape3D" parent="Environment/Section04_VerticalWall/RestLedgeLow"]
+shape = SubResource("BoxShape_block")
+
+[node name="RestLedgeHigh" type="StaticBody3D" parent="Environment/Section04_VerticalWall"]
+position = Vector3(13.5, 21.5, -15.4)
+scale = Vector3(3, 0.45, 2.5)
+
+[node name="Mesh" type="MeshInstance3D" parent="Environment/Section04_VerticalWall/RestLedgeHigh"]
+mesh = SubResource("BoxMesh_block")
+material_override = SubResource("Material_normal")
+
+[node name="Collision" type="CollisionShape3D" parent="Environment/Section04_VerticalWall/RestLedgeHigh"]
+shape = SubResource("BoxShape_block")
+
+[node name="WallTop" type="StaticBody3D" parent="Environment/Section04_VerticalWall"]
+position = Vector3(10, 28.1, -15.3)
+scale = Vector3(8, 0.6, 4)
+
+[node name="Mesh" type="MeshInstance3D" parent="Environment/Section04_VerticalWall/WallTop"]
+mesh = SubResource("BoxMesh_block")
+material_override = SubResource("Material_normal")
+
+[node name="Collision" type="CollisionShape3D" parent="Environment/Section04_VerticalWall/WallTop"]
+shape = SubResource("BoxShape_block")
+
+[node name="FallingRock" parent="Environment/Section04_VerticalWall" instance=ExtResource("6_falling_rock")]
+position = Vector3(10, 27.5, -15.8)
+
+[node name="Section05_HighLedges" type="Node3D" parent="Environment"]
+
+[node name="HighLedge01" type="StaticBody3D" parent="Environment/Section05_HighLedges"]
+position = Vector3(6.0, 29.1, -18)
+scale = Vector3(4, 0.4, 1.6)
+
+[node name="Mesh" type="MeshInstance3D" parent="Environment/Section05_HighLedges/HighLedge01"]
+mesh = SubResource("BoxMesh_block")
+material_override = SubResource("Material_danger")
+
+[node name="Collision" type="CollisionShape3D" parent="Environment/Section05_HighLedges/HighLedge01"]
+shape = SubResource("BoxShape_block")
+
+[node name="HighClimbFace01" type="StaticBody3D" parent="Environment/Section05_HighLedges" groups=["climbable"]]
+position = Vector3(4.0, 30.05, -18.85)
+scale = Vector3(1.0, 1.5, 0.5)
+
+[node name="Mesh" type="MeshInstance3D" parent="Environment/Section05_HighLedges/HighClimbFace01"]
+mesh = SubResource("BoxMesh_block")
+material_override = SubResource("Material_climbable")
+
+[node name="Collision" type="CollisionShape3D" parent="Environment/Section05_HighLedges/HighClimbFace01"]
+shape = SubResource("BoxShape_block")
+
+[node name="HighLedge02" type="StaticBody3D" parent="Environment/Section05_HighLedges"]
+position = Vector3(2.5, 31.2, -19.5)
+scale = Vector3(3.4, 0.4, 1.3)
+
+[node name="Mesh" type="MeshInstance3D" parent="Environment/Section05_HighLedges/HighLedge02"]
+mesh = SubResource("BoxMesh_block")
+material_override = SubResource("Material_ice")
+
+[node name="Collision" type="CollisionShape3D" parent="Environment/Section05_HighLedges/HighLedge02"]
+shape = SubResource("BoxShape_block")
+
+[node name="IceSurface" type="Area3D" parent="Environment/Section05_HighLedges/HighLedge02"]
+position = Vector3(0, 0.7, 0)
+collision_layer = 0
+collision_mask = 1
+monitoring = true
+script = ExtResource("7_ice")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/Section05_HighLedges/HighLedge02/IceSurface"]
+shape = SubResource("BoxShape_block")
+
+[node name="HighClimbFace02" type="StaticBody3D" parent="Environment/Section05_HighLedges" groups=["climbable"]]
+position = Vector3(0.5, 32.0, -19.7)
+scale = Vector3(1.0, 1.2, 0.5)
+
+[node name="Mesh" type="MeshInstance3D" parent="Environment/Section05_HighLedges/HighClimbFace02"]
+mesh = SubResource("BoxMesh_block")
+material_override = SubResource("Material_climbable")
+
+[node name="Collision" type="CollisionShape3D" parent="Environment/Section05_HighLedges/HighClimbFace02"]
+shape = SubResource("BoxShape_block")
+
+[node name="HighLedge03" type="StaticBody3D" parent="Environment/Section05_HighLedges"]
+position = Vector3(-1.0, 32.8, -20.2)
+scale = Vector3(3, 0.4, 1.4)
+
+[node name="Mesh" type="MeshInstance3D" parent="Environment/Section05_HighLedges/HighLedge03"]
+mesh = SubResource("BoxMesh_block")
+material_override = SubResource("Material_danger")
+
+[node name="Collision" type="CollisionShape3D" parent="Environment/Section05_HighLedges/HighLedge03"]
+shape = SubResource("BoxShape_block")
+
+[node name="WindZone" type="Area3D" parent="Environment/Section05_HighLedges"]
+position = Vector3(0.5, 33.0, -20.0)
+collision_layer = 0
+collision_mask = 1
+monitoring = true
+script = ExtResource("8_wind")
+WindDirection = Vector3(-1, 0, 0)
+Strength = 3.2
+Variation = 0.25
+
+[node name="WindVolume" type="MeshInstance3D" parent="Environment/Section05_HighLedges/WindZone"]
+mesh = SubResource("BoxMesh_wind")
+material_override = SubResource("Material_wind")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/Section05_HighLedges/WindZone"]
+shape = SubResource("BoxShape_wind")
+
+[node name="SummitClimbFace" type="StaticBody3D" parent="Environment/Section06_Summit" groups=["climbable"]]
+position = Vector3(0, 33.5, -20.2)
+scale = Vector3(2.5, 1.0, 0.5)
+
+[node name="Mesh" type="MeshInstance3D" parent="Environment/Section06_Summit/SummitClimbFace"]
+mesh = SubResource("BoxMesh_block")
+material_override = SubResource("Material_climbable")
+
+[node name="Collision" type="CollisionShape3D" parent="Environment/Section06_Summit/SummitClimbFace"]
+shape = SubResource("BoxShape_block")
+
+[node name="Section06_Summit" type="Node3D" parent="Environment"]
+
+[node name="SummitPlatform" type="StaticBody3D" parent="Environment/Section06_Summit"]
+position = Vector3(0, 34.5, -22)
+scale = Vector3(9, 1, 7)
+
+[node name="Mesh" type="MeshInstance3D" parent="Environment/Section06_Summit/SummitPlatform"]
+mesh = SubResource("BoxMesh_block")
+material_override = SubResource("Material_finish")
+
+[node name="Collision" type="CollisionShape3D" parent="Environment/Section06_Summit/SummitPlatform"]
+shape = SubResource("BoxShape_block")
+
+[node name="FlagPole" type="MeshInstance3D" parent="Environment/Section06_Summit"]
+position = Vector3(0, 37, -22)
+mesh = SubResource("CylinderMesh_flagpole")
+material_override = SubResource("Material_finish")
+
+[node name="Flag" type="MeshInstance3D" parent="Environment/Section06_Summit"]
+position = Vector3(0.8, 38.2, -22)
+mesh = SubResource("BoxMesh_flag")
+material_override = SubResource("Material_finish")
+
+[node name="Checkpoints" type="Node3D" parent="."]
+
+[node name="CheckpointStart" type="Area3D" parent="Checkpoints"]
+position = Vector3(0, 1.5, 4)
+collision_layer = 0
+collision_mask = 1
+monitoring = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Checkpoints/CheckpointStart"]
+shape = SubResource("BoxShape_checkpoint")
+
+[node name="RespawnPoint" type="Marker3D" parent="Checkpoints/CheckpointStart"]
+position = Vector3(0, -0.5, 0)
+
+[node name="CheckpointMid" type="Area3D" parent="Checkpoints"]
+position = Vector3(10, 14.5, -14.5)
+collision_layer = 0
+collision_mask = 1
+monitoring = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Checkpoints/CheckpointMid"]
+shape = SubResource("BoxShape_checkpoint")
+
+[node name="RespawnPoint" type="Marker3D" parent="Checkpoints/CheckpointMid"]
+position = Vector3(0, 1, 0)
+
+[node name="CheckpointHigh" type="Area3D" parent="Checkpoints"]
+position = Vector3(10, 30.5, -15.3)
+collision_layer = 0
+collision_mask = 1
+monitoring = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Checkpoints/CheckpointHigh"]
+shape = SubResource("BoxShape_checkpoint")
+
+[node name="RespawnPoint" type="Marker3D" parent="Checkpoints/CheckpointHigh"]
+position = Vector3(0, -1, 0)
+
+[node name="SpawnPoints" type="Node3D" parent="."]
+
+[node name="Player1Spawn" type="Marker3D" parent="SpawnPoints"]
+position = Vector3(-0.7, 0.9, 4)
+
+[node name="Player2Spawn" type="Marker3D" parent="SpawnPoints"]
+position = Vector3(0.7, 0.9, 4)
+
+[node name="Players" type="Node3D" parent="."]
+
+[node name="Player1" parent="Players" instance=ExtResource("2_player")]
+position = Vector3(-0.7, 0.9, 4)
+PlayerId = 1
+Visual/MeshInstance3D:material_override = SubResource("Material_player1")
+
+[node name="Player2" parent="Players" instance=ExtResource("2_player")]
+position = Vector3(0.7, 0.9, 4)
+PlayerId = 2
+Visual/MeshInstance3D:material_override = SubResource("Material_player2")
+
+[node name="PlayerRope" type="Node3D" parent="."]
+script = ExtResource("3_rope")
+Player1Path = NodePath("../Players/Player1")
+Player2Path = NodePath("../Players/Player2")
+
+[node name="RopeVisual" type="MeshInstance3D" parent="PlayerRope"]
+
+[node name="SharedCameraRig" type="Node3D" parent="."]
+position = Vector3(0, 2, 4)
+script = ExtResource("4_camera")
+Player1Path = NodePath("../Players/Player1")
+Player2Path = NodePath("../Players/Player2")
+BaseDistance = 9.0
+DistancePerPlayerSeparation = 0.65
+MaxDistance = 22.0
+VerticalSeparationOffset = 0.3
+
+[node name="SpringArm3D" type="SpringArm3D" parent="SharedCameraRig"]
+spring_length = 9.0
+margin = 0.1
+rotation_degrees = Vector3(-20, 0, 0)
+
+[node name="Camera3D" type="Camera3D" parent="SharedCameraRig/SpringArm3D" groups=["shared_camera"]]
+current = true
+
+[node name="FinishArea" type="Area3D" parent="."]
+position = Vector3(0, 37, -22)
+collision_layer = 0
+collision_mask = 1
+monitoring = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="FinishArea"]
+shape = SubResource("BoxShape_finish")
+
+[node name="SafetyResetArea" type="Area3D" parent="."]
+position = Vector3(0, -15, -10)
+collision_layer = 0
+collision_mask = 1
+monitoring = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SafetyResetArea"]
+shape = SubResource("BoxShape_safety")
+
+[node name="SafetyFloor" type="StaticBody3D" parent="."]
+position = Vector3(0, -18, -10)
+scale = Vector3(100, 1, 100)
+
+[node name="Mesh" type="MeshInstance3D" parent="SafetyFloor"]
+mesh = SubResource("BoxMesh_block")
+material_override = SubResource("Material_danger")
+
+[node name="Collision" type="CollisionShape3D" parent="SafetyFloor"]
+shape = SubResource("BoxShape_block")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-48, -28, 0)
+light_energy = 1.25
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_outdoor")

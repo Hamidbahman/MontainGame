@@ -10,6 +10,7 @@ public partial class SharedCamera : Node3D
     [Export] public float DistancePerPlayerSeparation { get; set; } = 0.5f;
     [Export] public float MinDistance { get; set; } = 6.0f;
     [Export] public float MaxDistance { get; set; } = 12.0f;
+    [Export] public float VerticalSeparationOffset { get; set; } = 0.25f;
     [Export] public float MouseSensitivity { get; set; } = 0.003f;
     [Export] public float MinPitch { get; set; } = Mathf.DegToRad(-55.0f);
     [Export] public float MaxPitch { get; set; } = Mathf.DegToRad(30.0f);
@@ -29,7 +30,8 @@ public partial class SharedCamera : Node3D
     public override void _Process(double delta)
     {
         Vector3 midpoint = (_player1.GlobalPosition + _player2.GlobalPosition) * 0.5f;
-        Vector3 targetPosition = midpoint + Vector3.Up * FollowHeight;
+        float verticalSeparation = Mathf.Abs(_player1.GlobalPosition.Y - _player2.GlobalPosition.Y);
+        Vector3 targetPosition = midpoint + Vector3.Up * (FollowHeight + verticalSeparation * VerticalSeparationOffset);
         GlobalPosition = GlobalPosition.Lerp(targetPosition, Mathf.Min(FollowSpeed * (float)delta, 1.0f));
 
         float separation = _player1.GlobalPosition.DistanceTo(_player2.GlobalPosition);

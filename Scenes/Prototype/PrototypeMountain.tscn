@@ -1,7 +1,8 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="PackedScene" path="res://Scenes/Player/Player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://Scripts/Camera/SharedCamera.cs" id="2_shared_camera"]
+[ext_resource type="Script" path="res://Scripts/Physics/PlayerRope.cs" id="3_player_rope"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_ground"]
 size = Vector3(32, 1, 28)
@@ -120,6 +121,13 @@ Visual/MeshInstance3D:material_override = SubResource("StandardMaterial_player1"
 position = Vector3(1, 0.9, -1.5)
 PlayerId = 2
 Visual/MeshInstance3D:material_override = SubResource("StandardMaterial_player2")
+
+[node name="PlayerRope" type="Node3D" parent="."]
+script = ExtResource("3_player_rope")
+Player1Path = NodePath("../Players/Player1")
+Player2Path = NodePath("../Players/Player2")
+
+[node name="RopeVisual" type="MeshInstance3D" parent="PlayerRope"]
 
 [node name="SharedCameraRig" type="Node3D" parent="."]
 position = Vector3(0, 1.5, 0)
