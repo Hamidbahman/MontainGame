@@ -1,0 +1,108 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="PackedScene" path="res://Scenes/Player/Player.tscn" id="1_player"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_ground"]
+size = Vector3(32, 1, 28)
+
+[sub_resource type="BoxShape3D" id="BoxShape_ground"]
+size = Vector3(32, 1, 28)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wall"]
+size = Vector3(10, 12, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape_wall"]
+size = Vector3(10, 12, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_platform"]
+size = Vector3(4, 0.5, 3)
+
+[sub_resource type="BoxShape3D" id="BoxShape_platform"]
+size = Vector3(4, 0.5, 3)
+
+[sub_resource type="Environment" id="Environment_outdoor"]
+background_mode = 1
+background_color = Color(0.36, 0.62, 0.88, 1)
+background_energy_multiplier = 0.7
+ambient_light_source = 3
+ambient_light_color = Color(0.65, 0.76, 0.9, 1)
+ambient_light_energy = 0.6
+tonemap_mode = 2
+tonemap_exposure = 1.1
+
+[node name="PrototypeMountain" type="Node3D"]
+
+[node name="Environment" type="Node3D" parent="."]
+
+[node name="Ground" type="StaticBody3D" parent="Environment"]
+position = Vector3(0, -0.5, 2)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Environment/Ground"]
+mesh = SubResource("BoxMesh_ground")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/Ground"]
+shape = SubResource("BoxShape_ground")
+
+[node name="ClimbingWall" type="StaticBody3D" parent="Environment"]
+position = Vector3(0, 6, -5)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Environment/ClimbingWall"]
+mesh = SubResource("BoxMesh_wall")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/ClimbingWall"]
+shape = SubResource("BoxShape_wall")
+
+[node name="Platform01" type="StaticBody3D" parent="Environment"]
+position = Vector3(3, 2, -2.5)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Environment/Platform01"]
+mesh = SubResource("BoxMesh_platform")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/Platform01"]
+shape = SubResource("BoxShape_platform")
+
+[node name="Platform02" type="StaticBody3D" parent="Environment"]
+position = Vector3(-3, 5, -2.5)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Environment/Platform02"]
+mesh = SubResource("BoxMesh_platform")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/Platform02"]
+shape = SubResource("BoxShape_platform")
+
+[node name="Platform03" type="StaticBody3D" parent="Environment"]
+position = Vector3(2, 8, -2.5)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Environment/Platform03"]
+mesh = SubResource("BoxMesh_platform")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/Platform03"]
+shape = SubResource("BoxShape_platform")
+
+[node name="SafetyFloor" type="StaticBody3D" parent="Environment"]
+position = Vector3(0, -5.5, -4)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Environment/SafetyFloor"]
+mesh = SubResource("BoxMesh_ground")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/SafetyFloor"]
+shape = SubResource("BoxShape_ground")
+
+[node name="SpawnPoints" type="Node3D" parent="."]
+
+[node name="Player1Spawn" type="Marker3D" parent="SpawnPoints"]
+position = Vector3(-1, 0.5, -1.5)
+
+[node name="Player2Spawn" type="Marker3D" parent="SpawnPoints"]
+position = Vector3(1, 0.5, -1.5)
+
+[node name="Player1" parent="." instance=ExtResource("1_player")]
+position = Vector3(-1, 0.9, -1.5)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-48, -28, 0)
+light_energy = 1.25
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_outdoor")
