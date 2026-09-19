@@ -29,6 +29,11 @@ shape = SubResource("CapsuleShape_player")
 mesh = SubResource("CapsuleMesh_player")
 material_override = SubResource("StandardMaterial_player")
 
+[node name="WallDetector" type="RayCast3D" parent="Visual"]
+position = Vector3(0, 1.0, 0)
+target_position = Vector3(0, 0, -1.15)
+enabled = true
+
 [node name="CameraPivot" type="Node3D" parent="."]
 position = Vector3(0, 1.4, 0)
 script = ExtResource("2_camera")

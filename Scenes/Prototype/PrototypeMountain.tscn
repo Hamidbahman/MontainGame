@@ -45,6 +45,7 @@ shape = SubResource("BoxShape_ground")
 
 [node name="ClimbingWall" type="StaticBody3D" parent="Environment"]
 position = Vector3(0, 6, -5)
+groups = ["climbable"]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Environment/ClimbingWall"]
 mesh = SubResource("BoxMesh_wall")
